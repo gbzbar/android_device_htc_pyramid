@@ -1,28 +1,27 @@
 import init.pyramid.usb.rc
 
-on emmc
+on early-init
+    export EXTERNAL_STORAGE /mnt/sdcard
+    mkdir /mnt/sdcard 0000 system system
+    # for backwards compatibility
+    symlink /mnt/sdcard /sdcard
 
+on early-fs
     mkdir /system
     mkdir /data 0771 system system
     mkdir /cache 0770 system cache
     mkdir /devlog 0700 root root
-    devwait emmc@system
-    mount ext4 emmc@system /system ro barrier=1
-    devwait emmc@userdata
-#   exec /system/bin/e2fsck -p emmc@userdata
-    mount ext4 emmc@userdata /data nosuid nodev barrier=1 noauto_da_alloc
-    mount ext4 emmc@cache /cache nosuid nodev barrier=1
-    mount ext4 emmc@devlog /devlog nosuid nodev barrier=1
 
-    #8x60: mount radio partition and create links for modem/q6 firmwares
+    #8x60: firmware
+    rm /vendor
     mkdir /vendor               0771 system system
     mkdir /vendor/firmware      0771 system system
     mkdir /vendor/firmware/misc 0771 system system
     mkdir /vendor/firmware/adsp 0771 system system
-    devwait emmc@radio
-    devwait emmc@adsp
-    mount vfat emmc@radio /vendor/firmware/misc ro shortname=lower
-    mount vfat emmc@adsp /vendor/firmware/adsp ro shortname=lower
+    wait /dev/block/mmcblk0p17
+    wait /dev/block/mmcblk0p19
+    mount vfat /dev/block/mmcblk0p17 /vendor/firmware/misc ro shortname=lower
+    mount vfat /dev/block/mmcblk0p19 /vendor/firmware/adsp ro shortname=lower
     symlink /vendor/firmware/adsp/q6.b09 /vendor/firmware/q6.b09
     symlink /vendor/firmware/adsp/q6.b08 /vendor/firmware/q6.b08
     symlink /vendor/firmware/adsp/q6.b07 /vendor/firmware/q6.b07
@@ -46,21 +45,16 @@ on emmc
     symlink /vendor/firmware/misc/modem.b00 /vendor/firmware/modem.b00
     symlink /vendor/firmware/misc/modem.mdt /vendor/firmware/modem.mdt
 
-on early-fs
     symlink /system/vendor/firmware/fw_bcmdhd.bin /vendor/firmware/fw_bcmdhd.bin
     symlink /system/vendor/firmware/fw_bcmdhd_apsta.bin /vendor/firmware/fw_bcmdhd_apsta.bin
     symlink /system/vendor/firmware/fw_bcmdhd_p2p.bin /vendor/firmware/fw_bcmdhd_p2p.bin
     symlink /system/vendor/firmware/bcm4329.hcd /vendor/firmware/bcm4329.hcd
-    
-on early-init
-    export EXTERNAL_STORAGE /mnt/sdcard
-    mkdir /mnt/sdcard 0000 system system
-    # for backwards compatibility
-    symlink /mnt/sdcard /sdcard
-    
-    device /dev/block/mmcblk0p16 0460 radio diag
 
-on init
+    mount ext4 /dev/block/mmcblk0p22 /system wait ro data=ordered noauto_da_alloc
+    mount ext4 /dev/block/mmcblk0p23 /data wait noatime nosuid nodev data=ordered noauto_da_alloc
+    mount ext4 /dev/block/mmcblk0p24 /cache wait noatime nosuid nodev data=ordered noauto_da_alloc
+    mount ext4 /dev/block/mmcblk0p27 /devlog wait noatime nosuid nodev data=ordered noauto_da_alloc
+
     # double check the perms and set owner
     chown root root /devlog
     chmod 0700 /devlog
@@ -74,8 +68,7 @@ on init
     chown system system /dev/mpu
     chown system system /dev/mpuirq
     chown system system /dev/timerirq
-    
-on boot
+
     # wifi
     mkdir /data/misc 1771 system misc
     mkdir /data/misc/wifi 0770 wifi wifi
@@ -90,6 +83,7 @@ on boot
     mkdir /data/radio 0770 radio radio
     chmod 2770 /data/radio
 
+on init
     # bluetooth power up/down interface
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
@@ -157,6 +151,7 @@ on boot
     write /sys/module/lowmemorykiller/parameters/minfile 2048,3072,4096,6144,8192,12288
     write /sys/module/lowmemorykiller/parameters/check_filepages 1
 
+on boot
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
 # Define TCP buffer sizes for various networks
