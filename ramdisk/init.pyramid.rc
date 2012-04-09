@@ -68,7 +68,12 @@ on early-fs
     chown system system /dev/mpu
     chown system system /dev/mpuirq
     chown system system /dev/timerirq
+    
+on early-boot
+    # set RLIMIT_MEMLOCK to 256MB
+    setrlimit 8 268435456 268435456
 
+on boot
     # wifi
     mkdir /data/misc 1771 system misc
     mkdir /data/misc/wifi 0770 wifi wifi
