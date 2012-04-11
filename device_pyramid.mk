@@ -113,8 +113,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     dalvik.vm.dexopt-flags=m=y
 
 # Device uses high-density artwork where available
-PRODUCT_AAPT_CONFIG := normal hdpi
-PRODUCT_AAPT_PREF_CONFIG := hdpi
 PRODUCT_LOCALES += en_US hdpi
 
 ifeq ($(TARGET_PREBUILT_KERNEL),)
