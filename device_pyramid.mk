@@ -106,6 +106,7 @@ PRODUCT_COPY_FILES += \
 
 ## misc
 PRODUCT_PROPERTY_OVERRIDES += \
+    windowsmgr.max_events_per_sec=240 \
     ro.setupwizard.enable_bypass=1 \
     dalvik.vm.lockprof.threshold=500 \
     ro.com.google.locationfeatures=1 \
