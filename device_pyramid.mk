@@ -115,9 +115,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.com.google.locationfeatures=1 \
     dalvik.vm.dexopt-flags=m=y
 
-# Device uses high-density artwork where available
-PRODUCT_LOCALES += en_US hdpi
-
 ifeq ($(TARGET_PREBUILT_KERNEL),)
 LOCAL_KERNEL := device/htc/pyramid/prebuilt/kernel
 else
