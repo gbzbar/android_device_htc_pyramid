@@ -7,7 +7,7 @@
     <int name="maxMessageSize">1048576</int>
 
     <!-- Maximum height for an attached image -->
-    <int name="maxImageHeight">1840</int>
+    <int name="maxImageHeight">2448</int>
 
     <!-- Maximum width for an attached image -->
     <int name="maxImageWidth">3264</int>
