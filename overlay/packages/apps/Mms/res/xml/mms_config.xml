@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mms_config version="4">
+    <!-- Flag indicating whether MMS should be enabled -->
+    <bool name="enabledMMS">true</bool>
+
+    <!-- Maximum message size in bytes for a MMS message -->
+    <int name="maxMessageSize">1048576</int>
+
+    <!-- Maximum height for an attached image -->
+    <int name="maxImageHeight">1840</int>
+
+    <!-- Maximum width for an attached image -->
+    <int name="maxImageWidth">3264</int>
+
+    <!-- UAProf URL -->
+    <string name="uaProfUrl">http://www.htcmms.com.tw/Android/Common/PG58/ua-profile.xml</string>
+</mms_config>
